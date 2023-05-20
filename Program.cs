@@ -1,4 +1,6 @@
-﻿namespace EvaluateDivision
+﻿using System.Linq;
+
+namespace EvaluateDivision
 {
     internal class Program
     {
@@ -33,7 +35,7 @@
                     {
                         return currentPair.equation;
                     }
-                    foreach(Pair pair in graph[source])
+                    foreach(Pair pair in graph[currentPair.edge])
                     {
                         if (visited.Add(pair.edge))
                         {
@@ -58,14 +60,14 @@
                     graph[equations[i][0]].Add(new Pair(equations[i][1], values[i]));
                     if (!graph.ContainsKey(equations[i][1]))
                     {
-                        graph.Add(equations[i][0], new List<Pair>());
+                        graph.Add(equations[i][1], new List<Pair>());
                     }
                     graph[equations[i][1]].Add(new Pair(equations[i][0], 1 / values[i]));
                 }
 
                 for (int i = 0; i < queries.Count; ++i)
                 {
-
+                    calcEquation[i] = BFS(graph, queries[i][0], queries[i][1]);
                 }
                 return calcEquation;
             }
@@ -74,20 +76,29 @@
         static void Main(string[] args)
         {
             EvaluateDivision evaluateDivision = new();
-            foreach(double val in evaluateDivision.CalcEquation(new string[][] {}, new double[] { }, new string[][] { }))
+            Console.WriteLine(string.Join(", ", evaluateDivision.CalcEquation(new string[][]
             {
-                Console.Write(val + " ");
-            }
+                new string[] { "a", "b" }, new string[] { "b", "c" }
+            }, new double[] { 2.0, 3.0 }, new string[][]
+            {
+                new string[] { "a", "c" }, new string[] { "b", "a" }, new string[] { "a", "e" }, new string[] { "a", "a" }, new string[] { "x", "x" }
+            })));
             Console.WriteLine();
-            foreach (double val in evaluateDivision.CalcEquation(new string[][] { }, new double[] { }, new string[][] { }))
+            Console.WriteLine(string.Join(", ", evaluateDivision.CalcEquation(new string[][]
             {
-                Console.Write(val + " ");
-            }
+                new string[] { "a", "b" }, new string[] { "b", "c" }, new string[] { "bc", "cd" }
+            }, new double[] { 1.5, 2.5, 5.0 }, new string[][]
+            {
+                new string[] { "a", "c" }, new string[] { "c", "b" }, new string[] { "bc", "cd" }, new string[] { "cd", "bc" }
+            })));
             Console.WriteLine();
-            foreach (double val in evaluateDivision.CalcEquation(new string[][] { }, new double[] { }, new string[][] { }))
+            Console.WriteLine(string.Join(", ", evaluateDivision.CalcEquation(new string[][]
             {
-                Console.Write(val + " ");
-            }
+                new string[] { "a", "b" }
+            }, new double[] { 0.5 }, new string[][]
+            {
+                new string[] { "a", "b" }, new string[] { "b", "a" }, new string[] { "a", "c" }, new string[] { "x", "y" }
+            })));
             Console.WriteLine();
         }
     }
